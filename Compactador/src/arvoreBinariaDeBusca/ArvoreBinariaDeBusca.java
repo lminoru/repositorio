@@ -252,7 +252,10 @@ c) Caso o nó que contém a informação a ser excluida tiver apenas uma subarvo
                     aux = aux.getRight();
                 }
                 atual.setInfo(aux.getInfo());
-                aux.getPai().setRight(null);
+                if (aux.getPai().getLeft().equals(aux))
+                    aux.getPai().setLeft(null);
+                else
+                    aux.getPai().setRight(null);
                 
                 return;
             }

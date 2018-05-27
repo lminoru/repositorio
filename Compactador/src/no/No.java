@@ -95,14 +95,16 @@ public class No<X> implements Cloneable
     {
         this.right = no;
         
-        no.pai = this;
+        if (no!=null)
+            no.pai = this;
     }
 
     public void setLeft(No<X> no) 
     {
         this.left = no;
         
-        no.pai = this;
+        if (no!=null)
+            no.pai = this;
     }
     
     public X getInfo()

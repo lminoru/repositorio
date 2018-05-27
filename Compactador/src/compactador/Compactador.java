@@ -5,6 +5,10 @@
  */
 package compactador;
 
+import arvoreBinariaDeBusca.ArvoreBinariaDeBusca;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Leo Minoru
@@ -15,7 +19,26 @@ public class Compactador {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        try {
+            ArvoreBinariaDeBusca arv = new ArvoreBinariaDeBusca();
+            arv.guarde(25);
+            
+            arv.guarde(20);
+            arv.guarde(30);
+            
+            System.out.println(arv.toString());
+            
+            arv.guarde(27);
+            arv.guarde(31);
+            
+            System.out.println(arv.toString());
+            
+            arv.excluir(30);
+            
+            System.out.println(arv.toString());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     
 }
