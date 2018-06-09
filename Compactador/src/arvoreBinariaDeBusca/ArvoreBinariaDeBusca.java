@@ -224,10 +224,13 @@ c) Caso o nó que contém a informação a ser excluida tiver apenas uma subarvo
                 {
                     if(atual.getPai().getLeft().equals(atual))
                     {
-                        atual.getPai().setLeft(atual.getRight());
+                        atual.getPai().setLeft(atual.getRight()); //pai-->filho
+                        atual.getRight().setPai(atual.getPai());  //filho-->pai
                     }
-                    else
-                        atual.getPai().setRight(atual.getRight());
+                    else{
+                        atual.getPai().setRight(atual.getRight());//pai-->filho
+                        atual.getRight().setPai(atual.getPai());  //filho-->pai
+                    }
                     
                     return;
                 }
@@ -235,10 +238,13 @@ c) Caso o nó que contém a informação a ser excluida tiver apenas uma subarvo
                 {
                     if(atual.getPai().getLeft().equals(atual))
                     {
-                        atual.getPai().setLeft(atual.getLeft());
+                        atual.getPai().setLeft(atual.getLeft());//pai-->filho
+                        atual.getLeft().setPai(atual.getPai()); //filho-->pai
                     }
-                    else
-                        atual.getPai().setRight(atual.getLeft());
+                    else{
+                        atual.getPai().setRight(atual.getLeft());//pai-->filho
+                        atual.getLeft().setPai(atual.getPai());  //filho-->pai
+                    }
                     
                     return;
                 }
@@ -252,10 +258,23 @@ c) Caso o nó que contém a informação a ser excluida tiver apenas uma subarvo
                     aux = aux.getRight();
                 }
                 atual.setInfo(aux.getInfo());
-                if (aux.getPai().getLeft().equals(aux))
-                    aux.getPai().setLeft(null);
-                else
+                if (aux.getLeft() != (null)){ 
+                //maior dos menores tem filho    
+                    if (aux.getPai().getLeft().equals(aux)){ 
+                    //maior dos menores esta a esq do pai
+                        aux.getPai().setLeft(aux.getLeft()); //pai-->filho
+                        aux.getLeft().setPai(aux.getPai());  //filho-->pai
+                    }
+                    else{               
+                    //maior dos menores esta a dir do pai
+                        aux.getPai().setRight(aux.getLeft());//pai-->filho 
+                        aux.getLeft().setPai(aux.getPai());  //filho-->pai
+                    }
+                }
+                else{ //maior dos menores nao tem filho
                     aux.getPai().setRight(null);
+                }
+                    
                 
                 return;
             }
