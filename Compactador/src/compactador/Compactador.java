@@ -110,12 +110,12 @@ public class Compactador {
     
     private static int ordenar(No<Informacao>[] vetNo) 
     {       
-        int lento = 0;
+       int lento = 0;
         while(vetNo[lento] != null)
         {
             int oMenor = lento;
             int rapido = 0;
-            while(vetNo[rapido] != null)
+            while(vetNo[rapido] != null) //oMenor apontar para o No de menor freq
             {
                 if(vetNo[rapido].getInfo().getQtd() < vetNo[oMenor].getInfo().getQtd())
                     oMenor = rapido;
@@ -123,9 +123,9 @@ public class Compactador {
                 rapido++;
             }
             
-            if(vetNo[oMenor] != vetNo[lento])
-            {
-                No<Informacao> aux = vetNo[oMenor];
+            if(vetNo[oMenor] != vetNo[lento]) //coloca o de menor freq no|trocan 
+            {                                 //indice que esta sendo ver|do pos
+                No<Informacao> aux = vetNo[oMenor];//ificado do vetor    |deles
                 vetNo[oMenor] = vetNo[lento];
                 vetNo[lento] = aux;
             }
