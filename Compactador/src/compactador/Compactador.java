@@ -6,6 +6,7 @@
 package compactador;
 
 import Informacao.Informacao;
+import codigo.Codigo;
 import java.io.*;
 import no.No;
 
@@ -69,11 +70,7 @@ public class Compactador {
             Codigo codComp = new Codigo();
             for(long i= 0; i < fileVelho.length(); i++)
                 codComp.mais(cod[fileVelho.read()]);
-            fileVelho.close();
-           
-            if(codComp.length() % 8 != 0)
-                for(int i = 0;i< 8-(codComp.length()%8); i++)
-                    codComp.mais("0");
+            fileVelho.close();           
             
             byte[] bytesComp = codComp.toByteArray();
                                  
@@ -82,6 +79,7 @@ public class Compactador {
             RandomAccessFile fileNovo = new RandomAccessFile(nome, "rw");   
             
             file.write(bytesComp);
+            file.close();
         }
         catch(FileNotFoundException er)
         {
@@ -101,10 +99,10 @@ public class Compactador {
                 cod[raiz.getInfo().getInd()] = (Codigo)c.clone();
             else
             {
-                c.mais("0");
+                c.mais(0);
                 print(raiz.getLeft(), c);
                 c.tiraUltimo();
-                c.mais("1");
+                c.mais(1);
                 print(raiz.getRight(), c);
             }
         }
