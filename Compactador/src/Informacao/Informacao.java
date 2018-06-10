@@ -26,6 +26,6 @@ public class Informacao {
     
     public int getQtd()
     {
-        return this.Qtd;
+        return this.qtd;
     }
 }
