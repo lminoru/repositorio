@@ -63,6 +63,11 @@ public class Compactador {
             print(arvore, c);
             
             
+            
+            System.out.println("Qual o nome que deseja para o arquivo compactado?");
+            String nome = tc.readLine();
+            
+            RandomAccessFile fileNovo = new RandomAccessFile(nomeArq, "rw"); 
         }
         catch(FileNotFoundException er)
         {
