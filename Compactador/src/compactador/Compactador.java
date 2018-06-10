@@ -40,8 +40,7 @@ public class Compactador {
                 vetInt[file.read()]++;             
             file.close();
             
-            
-            No<Informacao>[] vetNo = new No[256];
+            No<Informacao>[] vetNo = new No[256]; 
             
             int j = 0;
             for(int i = 0; i< 256; i++)
@@ -51,14 +50,17 @@ public class Compactador {
                     j++;
                 }
             
+            
             int controle = 256;
-            while(controle != 1)
+            while(controle != 2)
             {
                 controle = ordenar(vetNo);
+                
                 int novaQtd = vetNo[controle-2].getInfo().getQtd() + vetNo[controle-1].getInfo().getQtd();
                 No<Informacao> novoNoDir = new No(vetNo[controle-1]);
                 No<Informacao> novoNoEsq = new No(vetNo[controle-2]);
                 vetNo[controle-2] = new No(new Informacao(666,novaQtd), novoNoDir, novoNoEsq);
+                vetNo[controle-1] = null;
             }
 
             No<Informacao> arvore = vetNo[0];
@@ -87,7 +89,7 @@ public class Compactador {
         }
         catch(Exception err)
         {
-            System.err.println(err.getMessage());
+            System.err.println(err);
         }
     }   
     
@@ -107,7 +109,7 @@ public class Compactador {
             }
         }
     }
-    
+
     private static int ordenar(No<Informacao>[] vetNo) 
     {       
         int lento = 0;
@@ -117,7 +119,7 @@ public class Compactador {
             int rapido = 0;
             while(vetNo[rapido] != null)
             {
-                if(vetNo[rapido].getInfo().getQtd() < vetNo[oMenor].getInfo().getQtd())
+                if(vetNo[rapido].getInfo().getQtd() > vetNo[oMenor].getInfo().getQtd())
                     oMenor = rapido;
                 
                 rapido++;
