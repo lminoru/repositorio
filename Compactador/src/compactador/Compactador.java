@@ -18,6 +18,7 @@ public class Compactador {
     /**
      * @param args the command line arguments
      */
+    private static Codigo[] cod = new Codigo[256];
     public static void main(String[] args){
         // TODO code application logic here
         try
@@ -33,7 +34,7 @@ public class Compactador {
             for(int i = 0; i < 256; i++)
                 vetInt[i]=0;
                         
-            for(long i= 0; i < file.length(); i++)              
+            for(long i= 0; i < file.length(); i++)             
                 vetInt[file.read()]++;             
             
             No<Informacao>[] vetNo = new No[256];
@@ -54,7 +55,14 @@ public class Compactador {
                 No<Informacao> novoNoDir = new No(vetNo[controle-1]);
                 No<Informacao> novoNoEsq = new No(vetNo[controle-2]);
                 vetNo[controle-2] = new No(new Informacao(666,novaQtd), novoNoDir, novoNoEsq);
-            }            
+            }
+
+            No<Informacao> arvore = vetNo[0];
+            
+            Codigo c = new Codigo();
+            print(arvore, c);
+            
+            
         }
         catch(FileNotFoundException er)
         {
@@ -65,7 +73,24 @@ public class Compactador {
             System.err.println(err.getMessage());
         }
     }   
-
+    
+    public static void print(No<Informacao> raiz, Codigo c)
+    {
+        if(raiz != null)
+        {
+            if(raiz.getInfo().getInd()!=666)
+                cod[raiz.getInfo().getInd()] = (Codigo)c.clone();
+            else
+            {
+                c.mais("0");
+                print(raiz.getLeft(), c);
+                c.tiraUltimo();
+                c.mais("1");
+                print(raiz.getRight(), c);
+            }
+        }
+    }
+    
     private static int ordenar(No<Informacao>[] vetNo) 
     {       
         int lento = 0;
