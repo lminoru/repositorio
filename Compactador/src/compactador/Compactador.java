@@ -115,20 +115,20 @@ public class Compactador {
        int lento = 0;
         while(vetNo[lento] != null)
         {
-            int oMenor = lento;
+            int oMaior = lento;
             int rapido = 0;
-            while(vetNo[rapido] != null) //oMenor apontar para o No de menor freq
+            while(vetNo[rapido] != null) //oMaior apontar para o No de maior freq
             {
-                if(vetNo[rapido].getInfo().getQtd() > vetNo[oMenor].getInfo().getQtd())
-                    oMenor = rapido;
+                if(vetNo[rapido].getInfo().getQtd() > vetNo[oMaior].getInfo().getQtd())
+                    oMaior = rapido;
                 
                 rapido++;
             }
             
-            if(vetNo[oMenor] != vetNo[lento]) //coloca o de menor freq no|trocan 
+            if(vetNo[oMaior] != vetNo[lento]) //coloca o de maior freq no|trocan 
             {                                 //indice que esta sendo ver|do pos
-                No<Informacao> aux = vetNo[oMenor];//ificado do vetor    |deles
-                vetNo[oMenor] = vetNo[lento];
+                No<Informacao> aux = vetNo[oMaior];//ificado do vetor    |deles
+                vetNo[oMaior] = vetNo[lento];
                 vetNo[lento] = aux;
             }
 
