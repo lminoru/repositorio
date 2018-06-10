@@ -26,16 +26,19 @@ public class Compactador {
             System.out.println("Digite o endereço do arquivo");
             BufferedReader tc = new BufferedReader(new InputStreamReader(System.in));
             String nomeArq = tc.readLine();
-            RandomAccessFile file = new RandomAccessFile(nomeArq, "rw");
+            
             
             //byte[] byteFile = new byte[Integer.valueOf(new Long(file.length()).toString())];;;
             //        file.read(byteFile);
             int[] vetInt = new int[256];
             for(int i = 0; i < 256; i++)
                 vetInt[i]=0;
-                        
-            for(long i= 0; i < file.length(); i++)             
+            
+            RandomAccessFile file = new RandomAccessFile(nomeArq, "rw");            
+            for(long i= 0; i < file.length(); i++)
                 vetInt[file.read()]++;             
+            file.close();
+            
             
             No<Informacao>[] vetNo = new No[256];
             
@@ -62,12 +65,23 @@ public class Compactador {
             Codigo c = new Codigo();
             print(arvore, c);
             
+            RandomAccessFile fileVelho = new RandomAccessFile(nomeArq, "rw");
+            Codigo codComp = new Codigo();
+            for(long i= 0; i < fileVelho.length(); i++)
+                codComp.mais(cod[fileVelho.read()]);
+            fileVelho.close();
+           
+            if(codComp.length() % 8 != 0)
+                for(int i = 0;i< 8-(codComp.length()%8); i++)
+                    codComp.mais("0");
             
-            
+            byte[] bytesComp = codComp.toByteArray();
+                                 
             System.out.println("Qual o nome que deseja para o arquivo compactado?");
             String nome = tc.readLine();
+            RandomAccessFile fileNovo = new RandomAccessFile(nome, "rw");   
             
-            RandomAccessFile fileNovo = new RandomAccessFile(nomeArq, "rw"); 
+            file.write(bytesComp);
         }
         catch(FileNotFoundException er)
         {
