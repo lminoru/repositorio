@@ -14,7 +14,7 @@ public class Informacao {
     private int qtd;
     
     public Informacao(int ind, int qtd) throws Exception
-    {        
+    {
         this.ind = ind;
         this.qtd = qtd;
     }
