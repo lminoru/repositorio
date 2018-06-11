@@ -90,7 +90,7 @@ public class Codigo {
         {
             Codigo codigo = this.clone();
             if(codigo.getCod().length() % 8 != 0)
-                for(int i = 0;i< 8-(codigo.getCod().length()%8); i++)
+                for(int i = 0;i< 8-(this.getCod().length()%8); i++)
                     codigo.mais(0);
             
             byte[] ret = new byte[codigo.getCod().length()/8];

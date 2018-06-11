@@ -78,10 +78,10 @@ public class Compactador {
                                  
             System.out.println("Qual o nome que deseja para o arquivo compactado?");
             String nome = tc.readLine();
-            RandomAccessFile fileNovo = new RandomAccessFile(nome, "rw");   
+            RandomAccessFile fileNovo = new RandomAccessFile(nome+".hnt", "rw");   
             
-            file.write(bytesComp);
-            file.close();
+            fileNovo.write(bytesComp);
+            fileNovo.close();
         }
         catch(FileNotFoundException er)
         {
@@ -116,7 +116,7 @@ public class Compactador {
         while(vetNo[lento] != null)
         {
             int oMaior = lento;
-            int rapido = 0;
+            int rapido = lento;
             while(vetNo[rapido] != null) //oMaior apontar para o No de maior freq
             {
                 if(vetNo[rapido].getInfo().getQtd() > vetNo[oMaior].getInfo().getQtd())
