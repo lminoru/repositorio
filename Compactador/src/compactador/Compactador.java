@@ -51,19 +51,17 @@ public class Compactador {
                 }
             
             
-            int controle = 256;
-            int qtdDif =666;
-            while(controle != 2)
-            {
-                controle = ordenar(vetNo);
-                if(qtdDif ==666)
-                    qtdDif = controle;
-                
+            int controle = ordenar(vetNo);
+            int qtdDif = controle;
+            while(controle != 1)
+            {              
                 int novaQtd = vetNo[controle-2].getInfo().getQtd() + vetNo[controle-1].getInfo().getQtd();
                 No<Informacao> novoNoDir = new No(vetNo[controle-1]);
                 No<Informacao> novoNoEsq = new No(vetNo[controle-2]);
                 vetNo[controle-2] = new No(new Informacao(666,novaQtd), novoNoDir, novoNoEsq);
                 vetNo[controle-1] = null;
+                
+                controle = ordenar(vetNo);
             }
 
             No<Informacao> arvore = vetNo[0];
