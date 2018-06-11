@@ -79,6 +79,8 @@ public class Compactador {
                                  
             System.out.println("Qual o nome que deseja para o arquivo compactado?");
             String nome = tc.readLine();
+            if(nome.equals(nomeArq))
+                nome +="(Compactado)";
             RandomAccessFile fileNovo = new RandomAccessFile(nome+".hnt", "rw");   
             
             //cabeçalho
