@@ -52,9 +52,12 @@ public class Compactador {
             
             
             int controle = 256;
+            int qtdDif =666;
             while(controle != 2)
             {
                 controle = ordenar(vetNo);
+                if(qtdDif ==666)
+                    qtdDif = controle;
                 
                 int novaQtd = vetNo[controle-2].getInfo().getQtd() + vetNo[controle-1].getInfo().getQtd();
                 No<Informacao> novoNoDir = new No(vetNo[controle-1]);
@@ -80,6 +83,20 @@ public class Compactador {
             String nome = tc.readLine();
             RandomAccessFile fileNovo = new RandomAccessFile(nome+".hnt", "rw");   
             
+            //cabeçalho
+            byte qtdLixo = Byte.parseByte(Integer.toString(8-(codComp.getCod().length()%8)));
+            fileNovo.write(qtdLixo);
+            fileNovo.write(qtdDif);
+            for (int i = 1; i<256; i++) {
+                if(cod[i] != null)
+                {
+                    fileNovo.writeChar(i);
+                    fileNovo.writeInt(cod[i].getCod().length());
+                    fileNovo.writeChars(cod[i].getCod());
+                }
+            }
+            //---------
+          
             fileNovo.write(bytesComp);
             fileNovo.close();
         }
