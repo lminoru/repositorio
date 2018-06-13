@@ -17,7 +17,7 @@ public class Codigo {
         }
                           
 	public void mais(int bit){
-		this.cod += bit;
+		this.cod += bit+"";
 	}
         
         public void mais(Codigo c)
@@ -26,7 +26,7 @@ public class Codigo {
         }
 
 	public void tiraUltimo(){
-		cod.substring(0, cod.length() - 1);//algo assm
+		this.cod = cod.substring(0, cod.length() - 1);//algo assm
         }
         
         public String getCod()

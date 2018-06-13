@@ -183,4 +183,17 @@ public class No<X> implements Cloneable
         try{ret = new No(this);}catch(Exception err){}
         return ret;
     }
+    
+    public int altura()
+    {
+        if(this.getRight() == null && this.getLeft() == null)
+            return 1;
+        if(this.getRight() == null)
+            return 1+this.getLeft().altura();
+        if(this.getLeft() == null)
+            return 1+this.getRight().altura();
+        if(this.getRight().altura()> this.getRight().altura())
+            return 1+this.getRight().altura();
+        return 1+this.getLeft().altura();
+    }
 }

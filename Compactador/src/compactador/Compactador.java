@@ -26,7 +26,17 @@ public class Compactador {
         {
             System.out.println("Digite o endereço do arquivo");
             BufferedReader tc = new BufferedReader(new InputStreamReader(System.in));
-            String nomeArq = tc.readLine();
+
+            String recebe   = tc.readLine();
+
+            String nomeArq = recebe; 
+            String caminho = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\";
+
+            if (recebe.contains("\\")){//outro caminho
+                nomeArq = recebe.substring(recebe.lastIndexOf("\\")+1); 
+                caminho = recebe.replace(nomeArq, "");
+            }
+            System.out.println("Compactando..."+caminho+nomeArq);
             
             
             //byte[] byteFile = new byte[Integer.valueOf(new Long(file.length()).toString())];;;
@@ -35,7 +45,8 @@ public class Compactador {
             for(int i = 0; i < 256; i++)
                 vetInt[i]=0;
             
-            RandomAccessFile file = new RandomAccessFile(nomeArq, "rw");            
+            
+            RandomAccessFile file = new RandomAccessFile(caminho+nomeArq, "rw");            
             for(long i= 0; i < file.length(); i++)
                 vetInt[file.read()]++;             
             file.close();
@@ -50,7 +61,7 @@ public class Compactador {
                     j++;
                 }
             
-            
+             System.out.println(".");
             int controle = ordenar(vetNo);
             int qtdDif = controle;
             while(controle != 1)
@@ -63,25 +74,38 @@ public class Compactador {
                 
                 controle = ordenar(vetNo);
             }
-
+           
             No<Informacao> arvore = vetNo[0];
             
             Codigo c = new Codigo();
             print(arvore, c);
-            
-            RandomAccessFile fileVelho = new RandomAccessFile(nomeArq, "rw");
+            System.out.println("..");
+            file = new RandomAccessFile(caminho+nomeArq, "rw");
+            System.out.println("...");
+            System.out.println(arvore.altura());
             Codigo codComp = new Codigo();
-            for(long i= 0; i < fileVelho.length(); i++)
-                codComp.mais(cod[fileVelho.read()]);
-            fileVelho.close();           
+            for(long i= 0; i < file.length(); i++)
+                codComp.mais(cod[file.read()]);
+            System.out.println("....");
+            file.close();
             
             byte[] bytesComp = codComp.toByteArray();
-                                 
+                               
             System.out.println("Qual o nome que deseja para o arquivo compactado?");
-            String nome = tc.readLine();
+            recebe = tc.readLine();
+            
+            String nome = recebe;
+            caminho = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\";
+            
+            if (recebe.contains("\\")){//outro caminho
+                nome = recebe.substring(recebe.lastIndexOf("\\")+1); 
+                caminho = recebe.replace(nome, "");
+            }
+            
             if(nome.equals(nomeArq))
                 nome +="(Compactado)";
-            RandomAccessFile fileNovo = new RandomAccessFile(nome+".hnt", "rw");   
+            
+            RandomAccessFile fileNovo = new RandomAccessFile(caminho + nome+".hentai", "rw");  
             
             //cabeçalho
             byte qtdLixo = Byte.parseByte(Integer.toString(8-(codComp.getCod().length()%8)));
