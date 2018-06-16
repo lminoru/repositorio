@@ -47,8 +47,10 @@ public class Compactador {
             
             
             RandomAccessFile file = new RandomAccessFile(caminho+nomeArq, "rw");            
-            for(long i= 0; i < file.length(); i++)
-                vetInt[file.read()]++;             
+            for(long i= 0; i < file.length(); i++){
+                int indice = file.read();
+                vetInt[indice]++;             
+            }
             file.close();
             
             No<Informacao>[] vetNo = new No[256]; 
@@ -85,8 +87,10 @@ public class Compactador {
             System.out.println("...");
             System.out.println(arvore.altura());
             Codigo codComp = new Codigo();
-            for(long i= 0; i < file.length(); i++)
-                codComp.mais(cod[file.read()]);
+            for(long i= 0; i < file.length(); i++){
+                int indice = file.read();
+                codComp.mais(cod[indice]);
+            }
             System.out.println("....");
             file.close();
             
@@ -119,18 +123,14 @@ public class Compactador {
                     System.out.println("tamanho:"+cod[i].getCod().length());
                     System.out.println("codigo:"+cod[i].getCod());
                     
-                    fileNovo.write(i);
-                    fileNovo.writeByte(cod[i].getCod().length());
+                    fileNovo.writeByte(i); 
+                    fileNovo.write(cod[i].getCod().length());
                     for (int l=0; l<cod[i].getCod().length(); l++)
                         fileNovo.writeChar(cod[i].getCod().charAt(l));
                 }
             }
-<<<<<<< HEAD
-            //---------
 
-=======
-            //---------          
->>>>>>> 1c78e047b9830226cd65bef084cc411bda910b9e
+            System.out.println("codComp:" + codComp.getCod());
             fileNovo.write(bytesComp);
 
             fileNovo.close();
@@ -141,7 +141,7 @@ public class Compactador {
         }
         catch(Exception err)
         {
-            System.err.println(err);
+            err.printStackTrace();
         }
     }   
     
@@ -158,6 +158,7 @@ public class Compactador {
                 c.tiraUltimo();
                 c.mais(1);
                 print(raiz.getRight(), c);
+                c.tiraUltimo();
             }
         }
     }

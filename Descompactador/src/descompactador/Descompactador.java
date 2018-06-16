@@ -57,14 +57,15 @@ public class Descompactador {
                 tamanhoCabecalho+=2;
                 cabecalho[indice] = new Codigo();
                 for (int j=0; j<tamanho; j++){
-                    cabecalho[indice].mais(file.readChar());
-                    tamanhoCabecalho++;
+                    char ch = file.readChar();
+                    cabecalho[indice].mais(ch);
+                    tamanhoCabecalho += 2;
                 }
             }  
             
             
             //montar arvore do cabecalho
-            No<Integer> arvore = new No<Integer>(666);
+            No<Integer> arvore = new No(666);
             for (int i=0; i<cabecalho.length; i++){
                 if (cabecalho[i]!=null){
                     char[] percurso = cabecalho[i].getCod().toCharArray();
@@ -115,7 +116,7 @@ public class Descompactador {
             //da folha, como byte (writeByte)
             No<Integer> atual = arvore;
             for (long i = tamanhoCabecalho; i<file.length(); i++){
-                byte direcao = (byte)(file.read() & 0xFF);
+                int direcao = (int)(file.read()& 0xFF);
                 System.out.println("direcao:"+direcao);
                 System.out.println(Integer.toBinaryString(direcao));
                 String oi = Integer.toBinaryString(direcao);
@@ -123,28 +124,29 @@ public class Descompactador {
                     oi = "0"+oi;
                 System.out.println(oi);
                 
-            
+                if (i==file.length()-1)//tirar lixo
+                    oi = oi.substring(0, (8-lixo));
+                
                 
                 //mexer aqui
-                for (int j=0; j<8; j++){
+                for (int j=0; j<oi.length(); j++){
                     System.out.println(j);
-                    if (atual.getLeft()==null && atual.getRight()==null){
-                        fileDesc.writeByte(atual.getInfo());
-                        System.out.println(i+","+j+":"+atual.getInfo());
-                        atual = arvore;
-                        j--;
-                    }
-                    else{
-                    
-                        if(oi.charAt(j)=='1'){//dir
-                            if (atual.getRight()!=null)
-                                atual = atual.getRight();
 
-                        }
-                        else //esq  
-                            if (atual.getLeft()!=null)
-                                atual = atual.getLeft();
-                    }      
+                    if(oi.charAt(j)=='1'){//dir
+                        if (atual.getRight()!=null)
+                            atual = atual.getRight();
+
+                    }
+                    else //esq  
+                        if (atual.getLeft()!=null)
+                            atual = atual.getLeft();
+                    
+                    
+                    if (atual.getLeft()==null && atual.getRight()==null){
+                        System.out.println(i+","+j+":"+atual.getInfo());
+                        fileDesc.writeByte(atual.getInfo());
+                        atual = arvore;
+                    }
                 }
             }
            file.close();
