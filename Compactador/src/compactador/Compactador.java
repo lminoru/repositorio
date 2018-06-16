@@ -76,7 +76,8 @@ public class Compactador {
             }
            
             No<Informacao> arvore = vetNo[0];
-            
+            System.out.println("altura:"+arvore.altura());
+            System.out.println("arvore:"+arvore.toString());
             Codigo c = new Codigo();
             print(arvore, c);
             System.out.println("..");
@@ -108,20 +109,26 @@ public class Compactador {
             RandomAccessFile fileNovo = new RandomAccessFile(caminho + nome+".hentai", "rw");  
             
             //cabeçalho
-            byte qtdLixo = Byte.parseByte(Integer.toString(8-(codComp.getCod().length()%8)));
-            fileNovo.write(qtdLixo);
-            fileNovo.write(qtdDif);
+            byte qtdLixo = Byte.parseByte(Integer.toString(8-((codComp.getCod().length()%8)==0?8:codComp.getCod().length()%8)));
+            fileNovo.writeByte(qtdLixo);System.out.println(qtdLixo);
+            fileNovo.write(qtdDif);System.out.println(qtdDif);
             for (int i = 1; i<256; i++) {
                 if(cod[i] != null)
                 {
-                    fileNovo.writeChar(i);
-                    fileNovo.writeInt(cod[i].getCod().length());
-                    fileNovo.writeChars(cod[i].getCod());
+                    System.out.println("indice:"+i);
+                    System.out.println("tamanho:"+cod[i].getCod().length());
+                    System.out.println("codigo:"+cod[i].getCod());
+                    
+                    fileNovo.write(i);
+                    fileNovo.writeByte(cod[i].getCod().length());
+                    for (int l=0; l<cod[i].getCod().length(); l++)
+                        fileNovo.writeChar(cod[i].getCod().charAt(l));
                 }
             }
             //---------
-          
+
             fileNovo.write(bytesComp);
+
             fileNovo.close();
         }
         catch(FileNotFoundException er)

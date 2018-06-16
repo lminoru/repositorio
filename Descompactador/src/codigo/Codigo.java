@@ -20,6 +20,10 @@ public class Codigo {
 		this.cod += bit+"";
 	}
         
+        public void mais(char bit){
+		this.cod += bit;
+	}
+        
         public void mais(Codigo c)
         {
             this.cod += c.getCod();
@@ -95,7 +99,7 @@ public class Codigo {
             
             byte[] ret = new byte[codigo.getCod().length()/8];
             for(int i = 0; i< codigo.getCod().length(); i+=8)
-                ret[i/8] = (byte) (Integer.parseInt (codigo.getCod().substring(i,i+8),2) & 0xFF);
+                ret[i/8] = (byte) (Integer.parseInt (codigo.getCod().substring(i,i+7),2) & 0xFF);
             
             return ret;
         }

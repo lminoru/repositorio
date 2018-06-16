@@ -28,4 +28,10 @@ public class Informacao {
     {
         return this.qtd;
     }
+    
+    public String toString(){
+        String ret = ind+"";
+        return ret;
+        
+    }
 }
