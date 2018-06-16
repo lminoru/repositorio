@@ -125,8 +125,12 @@ public class Compactador {
                         fileNovo.writeChar(cod[i].getCod().charAt(l));
                 }
             }
+<<<<<<< HEAD
             //---------
 
+=======
+            //---------          
+>>>>>>> 1c78e047b9830226cd65bef084cc411bda910b9e
             fileNovo.write(bytesComp);
 
             fileNovo.close();
