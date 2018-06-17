@@ -115,16 +115,16 @@ public class Compactador {
             //cabeçalho
             byte qtdLixo = Byte.parseByte(Integer.toString(8-((codComp.getCod().length()%8)==0?8:codComp.getCod().length()%8)));
             fileNovo.writeByte(qtdLixo);System.out.println(qtdLixo);
-            fileNovo.write(qtdDif);System.out.println(qtdDif);
-            for (int i = 1; i<256; i++) {
+            fileNovo.writeInt(qtdDif);System.out.println(qtdDif);
+            for (int i = 0; i<256; i++) {
                 if(cod[i] != null)
                 {
                     System.out.println("indice:"+i);
                     System.out.println("tamanho:"+cod[i].getCod().length());
                     System.out.println("codigo:"+cod[i].getCod());
                     
-                    fileNovo.writeByte(i); 
-                    fileNovo.write(cod[i].getCod().length());
+                    fileNovo.write(i & 0xFF); 
+                    fileNovo.writeByte(cod[i].getCod().length());
                     for (int l=0; l<cod[i].getCod().length(); l++)
                         fileNovo.writeChar(cod[i].getCod().charAt(l));
                 }
@@ -176,6 +176,9 @@ public class Compactador {
                     oMaior = rapido;
                 
                 rapido++;
+                
+                if (rapido==256)
+                    break;
             }
             
             if(vetNo[oMaior] != vetNo[lento]) //coloca o de maior freq no|trocan 
@@ -186,6 +189,9 @@ public class Compactador {
             }
 
             lento++;
+            
+            if (lento==256)
+                    break;
         }
        
         return lento;

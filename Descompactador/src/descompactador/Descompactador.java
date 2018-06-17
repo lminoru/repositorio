@@ -45,14 +45,14 @@ public class Descompactador {
             //receber bytes do arquivo
             RandomAccessFile file = new RandomAccessFile(caminho+nomeArq, "rw");
             int lixo = file.readByte();
-            int diferentes = file.read();
+            int diferentes = file.readInt();
             System.out.println(lixo);System.out.println(diferentes);
             
             int tamanhoCabecalho = 2;
             //passar cabecalho para vetor codigo
             Codigo[] cabecalho = new Codigo[256];
             for (int i=0; i<diferentes; i++){
-                int indice  = file.read();
+                int indice  = file.read() & 0xFF;
                 int tamanho = file.readByte();
                 tamanhoCabecalho+=2;
                 cabecalho[indice] = new Codigo();
