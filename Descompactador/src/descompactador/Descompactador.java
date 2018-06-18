@@ -44,7 +44,7 @@ public class Descompactador {
             
             //receber bytes do arquivo
             RandomAccessFile file = new RandomAccessFile(caminho+nomeArq, "rw");
-            int lixo = file.readByte();
+            byte lixo = file.readByte();
             int diferentes = file.readInt();
             System.out.println(lixo);System.out.println(diferentes);
             
