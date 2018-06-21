@@ -24,6 +24,11 @@ public class Codigo {
         {
             this.cod += c.getCod();
         }
+        
+        public void mais(char c)
+        {
+            this.cod += c;
+        }
 
 	public void tiraUltimo(){
 		this.cod = cod.substring(0, cod.length() - 1);//algo assm

@@ -1,151 +1,193 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package compactador;
 
 import Informacao.Informacao;
 import codigo.Codigo;
-import java.io.*;
+import java.io.RandomAccessFile;
 import no.No;
 
-/**
- *
- * @author Luciano
- */
-public class Compactador {
+public class Compactador
+{
+	private static Codigo[] cod = new Codigo[256];
 
-    /**
-     * @param args the command line arguments
-     */
-    private static Codigo[] cod = new Codigo[256];
-    public static void main(String[] args){
-        // TODO code application logic here
-        try
-        {
-            System.out.println("Digite o endereço do arquivo");
-            BufferedReader tc = new BufferedReader(new InputStreamReader(System.in));
-
-            String recebe   = tc.readLine();
-
-            String nomeArq = recebe; 
-            String caminho = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\";
-
-            if (recebe.contains("\\")){//outro caminho
-                nomeArq = recebe.substring(recebe.lastIndexOf("\\")+1); 
-                caminho = recebe.replace(nomeArq, "");
+	public static void compactar(String remet, String destino) throws Exception
+	{
+		int[] vetInt = new int[256];
+        for(int i = 0; i < 256; i++)
+            vetInt[i]=0;      
+        
+        RandomAccessFile file = new RandomAccessFile(remet, "rw");            
+        for(long i= 0; i < file.length(); i++){
+            int indice = file.read();
+            vetInt[indice]++;             
+        }
+        file.close();
+        
+        No<Informacao>[] vetNo = new No[256]; 
+        
+        int j = 0;
+        for(int i = 0; i< 256; i++)
+            if(vetInt[i] > 0)
+            {
+                vetNo[j] = new No(new Informacao(i, vetInt[i]));
+                j++;
             }
-            System.out.println("Compactando..."+caminho+nomeArq);
+        
+        int controle = ordenar(vetNo);
+        int qtdDif = controle;
+        while(controle != 1)
+        {              
+            int novaQtd = vetNo[controle-2].getInfo().getQtd() + vetNo[controle-1].getInfo().getQtd();
+            No<Informacao> novoNoDir = new No(vetNo[controle-1]);
+            No<Informacao> novoNoEsq = new No(vetNo[controle-2]);
+            vetNo[controle-2] = new No(new Informacao(666,novaQtd), novoNoDir, novoNoEsq);
+            vetNo[controle-1] = null;
             
-            
-            //byte[] byteFile = new byte[Integer.valueOf(new Long(file.length()).toString())];;;
-            //        file.read(byteFile);
-            int[] vetInt = new int[256];
-            for(int i = 0; i < 256; i++)
-                vetInt[i]=0;
-            
-            
-            RandomAccessFile file = new RandomAccessFile(caminho+nomeArq, "rw");            
-            for(long i= 0; i < file.length(); i++){
-                int indice = file.read();
-                vetInt[indice]++;             
+            controle = ordenar(vetNo);
+        }
+       
+        No<Informacao> arvore = vetNo[0];
+        Codigo c = new Codigo();
+        print(arvore, c);
+        file = new RandomAccessFile(remet, "rw");
+        Codigo codComp = new Codigo();
+        for(long i= 0; i < file.length(); i++){
+            int indice = file.read();
+            codComp.mais(cod[indice]);
+        }
+        file.close();
+        
+        System.out.println("Arvore:"+arvore.toString());
+        
+        byte[] bytesComp = codComp.toByteArray();
+
+        RandomAccessFile fileNovo = new RandomAccessFile(destino+".hentai", "rw");  
+        
+        //cabeçalho
+        byte qtdLixo = Byte.parseByte(Integer.toString(8-((codComp.getCod().length()%8)==0?8:codComp.getCod().length()%8)));
+        fileNovo.writeByte(qtdLixo);
+        fileNovo.writeInt(qtdDif);
+        for (int i = 0; i<256; i++) {
+            if(cod[i] != null)
+            {                    
+                fileNovo.write(i & 0xFF); 
+                fileNovo.writeByte(cod[i].getCod().length());
+                for (int l=0; l<cod[i].getCod().length(); l++)
+                    fileNovo.writeChar(cod[i].getCod().charAt(l));
             }
-            file.close();
+        }
+
+        fileNovo.write(bytesComp);
+       
+        fileNovo.close();
+	}
+
+	public static void descompactar(String remet, String destino) throws Exception
+	{
+            RandomAccessFile file = new RandomAccessFile(remet, "rw");
+            byte lixo = file.readByte();
+            int diferentes = file.readInt();
             
-            No<Informacao>[] vetNo = new No[256]; 
+            //saber tamnho do do cabecalho
+            int tamanhoCabecalho = 5;
             
-            int j = 0;
-            for(int i = 0; i< 256; i++)
-                if(vetInt[i] > 0)
-                {
-                    vetNo[j] = new No(new Informacao(i, vetInt[i]));
-                    j++;
+            //passar cabecalho para vetor codigo
+            Codigo[] cabecalho = new Codigo[256];
+            for (int i=0; i<diferentes; i++){
+                int indice  = file.read() & 0xFF;
+                int tamanho = file.readByte();
+                tamanhoCabecalho+=2;
+                cabecalho[indice] = new Codigo();
+                for (int j=0; j<tamanho; j++){
+                    char ch = file.readChar();
+                    cabecalho[indice].mais(ch);
+                    tamanhoCabecalho += 2;
                 }
+            }   
             
-             System.out.println(".");
-            int controle = ordenar(vetNo);
-            int qtdDif = controle;
-            while(controle != 1)
-            {              
-                int novaQtd = vetNo[controle-2].getInfo().getQtd() + vetNo[controle-1].getInfo().getQtd();
-                No<Informacao> novoNoDir = new No(vetNo[controle-1]);
-                No<Informacao> novoNoEsq = new No(vetNo[controle-2]);
-                vetNo[controle-2] = new No(new Informacao(666,novaQtd), novoNoDir, novoNoEsq);
-                vetNo[controle-1] = null;
-                
-                controle = ordenar(vetNo);
-            }
-           
-            No<Informacao> arvore = vetNo[0];
-            System.out.println("altura:"+arvore.altura());
-            System.out.println("arvore:"+arvore.toString());
-            Codigo c = new Codigo();
-            print(arvore, c);
-            System.out.println("..");
-            file = new RandomAccessFile(caminho+nomeArq, "rw");
-            System.out.println("...");
-            System.out.println(arvore.altura());
-            Codigo codComp = new Codigo();
-            for(long i= 0; i < file.length(); i++){
-                int indice = file.read();
-                codComp.mais(cod[indice]);
-            }
-            System.out.println("....");
-            file.close();
             
-            byte[] bytesComp = codComp.toByteArray();
-                               
-            System.out.println("Qual o nome que deseja para o arquivo compactado?");
-            recebe = tc.readLine();
-            
-            String nome = recebe;
-            caminho = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\";
-            
-            if (recebe.contains("\\")){//outro caminho
-                nome = recebe.substring(recebe.lastIndexOf("\\")+1); 
-                caminho = recebe.replace(nome, "");
-            }
-            
-            if(nome.equals(nomeArq))
-                nome +="(Compactado)";
-            
-            RandomAccessFile fileNovo = new RandomAccessFile(caminho + nome+".hentai", "rw");  
-            
-            //cabeçalho
-            byte qtdLixo = Byte.parseByte(Integer.toString(8-((codComp.getCod().length()%8)==0?8:codComp.getCod().length()%8)));
-            fileNovo.writeByte(qtdLixo);System.out.println(qtdLixo);
-            fileNovo.writeInt(qtdDif);System.out.println(qtdDif);
-            for (int i = 0; i<256; i++) {
-                if(cod[i] != null)
-                {
-                    System.out.println("indice:"+i);
-                    System.out.println("tamanho:"+cod[i].getCod().length());
-                    System.out.println("codigo:"+cod[i].getCod());
+            //montar arvore do cabecalho
+            No<Integer> arvore = new No(666);
+            for (int i=0; i<cabecalho.length; i++){
+                if (cabecalho[i]!=null){
+                    char[] percurso = cabecalho[i].getCod().toCharArray();
+                    No atual = arvore;
+                    for (int j=0; j<percurso.length; j++){
+                        if (percurso[j]=='0'){
+                            if (atual.getLeft()==null)
+                                atual.setLeft(new No(666));
+                            
+                            atual = atual.getLeft();
+                        }
+                        else
+                        {
+                            if (atual.getRight()==null)
+                                atual.setRight(new No(666));
+                            
+                                atual = atual.getRight();
+                        }
+                            
+                    }
                     
-                    fileNovo.write(i & 0xFF); 
-                    fileNovo.writeByte(cod[i].getCod().length());
-                    for (int l=0; l<cod[i].getCod().length(); l++)
-                        fileNovo.writeChar(cod[i].getCod().charAt(l));
+                    atual.setInfo(i);
+                    
+                }
+                
+            }
+            
+            
+            System.out.println("Arvore:"+arvore.toString());
+            
+            
+            //arquivo descompactado
+            RandomAccessFile fileDesc = new RandomAccessFile(destino, "rw");
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            //Ler byte a byte, se for zero segue pra esquerda da arvore, se for
+            //1 direita da arvore. Qnd chegar na folha imprimir no arquivo o info
+            //da folha, como byte (writeByte)
+            No<Integer> atual = arvore;
+            for (long i = tamanhoCabecalho; i<file.length(); i++){
+                int direcao = (int)(file.read()& 0xFF);
+                String oi = Integer.toBinaryString(direcao);
+                while (oi.length()<8)
+                    oi = "0"+oi;
+                
+                if (i==file.length()-1)//tirar lixo
+                    oi = oi.substring(0, (8-lixo));
+                
+                
+                //mexer aqui
+                for (int j=0; j<oi.length(); j++){
+
+                    if(oi.charAt(j)=='1'){//dir
+                        if (atual.getRight()!=null)
+                            atual = atual.getRight();
+
+                    }
+                    else //esq  
+                        if (atual.getLeft()!=null)
+                            atual = atual.getLeft();
+                    
+                    
+                    if (atual.getLeft()==null && atual.getRight()==null){
+                        fileDesc.writeByte(atual.getInfo());
+                        atual = arvore;
+                    }
                 }
             }
+           file.close();
+           fileDesc.close();
+	}
 
-            System.out.println("codComp:" + codComp.getCod());
-            fileNovo.write(bytesComp);
-
-            fileNovo.close();
-        }
-        catch(FileNotFoundException er)
-        {
-            System.err.println("Arquivo não encontrado");
-        }
-        catch(Exception err)
-        {
-            err.printStackTrace();
-        }
-    }   
-    
-    public static void print(No<Informacao> raiz, Codigo c)
+	private static void print(No<Informacao> raiz, Codigo c)
     {
         if(raiz != null)
         {
@@ -191,7 +233,7 @@ public class Compactador {
             lento++;
             
             if (lento==256)
-                    break;
+               break;
         }
        
         return lento;

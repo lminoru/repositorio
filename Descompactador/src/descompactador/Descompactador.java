@@ -32,6 +32,12 @@ public class Descompactador {
             BufferedReader tc = new BufferedReader(new InputStreamReader(System.in));
 
             String recebe   = tc.readLine();
+            
+            if("".equals(recebe.trim()))
+            {
+                System.out.println("Voce nao digitou o endereco do arquivo!");
+                return;
+            }
 
             String nomeArq = recebe; 
             String caminho = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\";
@@ -48,7 +54,9 @@ public class Descompactador {
             int diferentes = file.readInt();
             System.out.println(lixo);System.out.println(diferentes);
             
-            int tamanhoCabecalho = 2;
+            //saber tamnho do do cabecalho
+            int tamanhoCabecalho = 5;
+            
             //passar cabecalho para vetor codigo
             Codigo[] cabecalho = new Codigo[256];
             for (int i=0; i<diferentes; i++){
@@ -100,6 +108,12 @@ public class Descompactador {
             System.out.println("Digite o nome para arquivo descompactado");
             tc = new BufferedReader(new InputStreamReader(System.in));
             nomeArq = tc.readLine();
+            
+            if("".equals(nomeArq.trim()))
+            {
+                System.out.println("Voce nao digitou o nome do arquivo!");
+            }
+            
             RandomAccessFile fileDesc = new RandomAccessFile(caminho+nomeArq, "rw");
             
             
