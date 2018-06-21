@@ -141,15 +141,7 @@ public class Compactador
             //arquivo descompactado
             RandomAccessFile fileDesc = new RandomAccessFile(destino, "rw");
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
             //Ler byte a byte, se for zero segue pra esquerda da arvore, se for
             //1 direita da arvore. Qnd chegar na folha imprimir no arquivo o info
             //da folha, como byte (writeByte)
@@ -164,7 +156,7 @@ public class Compactador
                     oi = oi.substring(0, (8-lixo));
                 
                 
-                //mexer aqui
+                
                 for (int j=0; j<oi.length(); j++){
 
                     if(oi.charAt(j)=='1'){//dir
@@ -187,7 +179,7 @@ public class Compactador
            fileDesc.close();
 	}
 
-	private static void print(No<Informacao> raiz, Codigo c)
+    private static void print(No<Informacao> raiz, Codigo c)
     {
         if(raiz != null)
         {
